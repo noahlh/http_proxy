@@ -21,7 +21,7 @@ module HTTP
         raise IO::Error.new("Failed to open TCP connection to #{@host}:#{@port} (#{ex.message})")
       end
 
-      if proxy_client.username && proxy_client.password
+      if proxy_client.username && proxy_client.password && proxy_client.auth_all_requests
         proxy_basic_auth(proxy_client.username, proxy_client.password)
       end
     end

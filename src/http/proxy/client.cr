@@ -18,6 +18,7 @@ module HTTP
       property username : String?
       property password : String?
       property headers : HTTP::Headers
+      property auth_all_requests : Bool = false
 
       getter tls : OpenSSL::SSL::Context::Client?
 
@@ -36,7 +37,8 @@ module HTTP
       def initialize(@host, @port, *,
                      headers : HTTP::Headers? = nil,
                      @username = nil, @password = nil,
-                     user_agent = "Crystal, HTTP::Proxy/#{HTTP::Proxy::VERSION}")
+                     user_agent = "Crystal, HTTP::Proxy/#{HTTP::Proxy::VERSION}",
+                     @auth_all_requests = false)
         @headers = headers || HTTP::Headers.new
         @headers["User-Agent"] ||= user_agent
       end
