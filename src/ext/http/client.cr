@@ -8,6 +8,7 @@ module HTTP
       @proxy = proxy_client
 
       begin
+        Log.debug { "Opening TCP connection to Proxy: #{proxy_client.host}:#{proxy_client.port}" }
         @io = proxy_client.open(
           host: @host,
           port: @port,

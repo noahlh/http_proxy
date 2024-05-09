@@ -22,11 +22,6 @@ module HTTP
 
       getter tls : OpenSSL::SSL::Context::Client?
 
-      @dns_timeout : Float64?
-      @connect_timeout : Float64?
-      @read_timeout : Float64?
-      @write_timeout : Float64?
-
       # Creates a new socket factory that tunnels via the given host and port.
       # The following optional arguments are supported:
       #
@@ -45,10 +40,10 @@ module HTTP
 
       # Returns a new socket connected to the given host and port via the
       # proxy that was requested when the socket factory was instantiated.
-      def open(host, port, tls = nil, *, @dns_timeout, @connect_timeout, @read_timeout, @write_timeout) : IO
-        socket = TCPSocket.new(@host, @port, @dns_timeout, @connect_timeout)
-        socket.read_timeout = @read_timeout if @read_timeout
-        socket.write_timeout = @write_timeout if @write_timeout
+      def open(host, port, tls = nil, *, dns_timeout, connect_timeout, read_timeout, write_timeout) : IO
+        socket = TCPSocket.new(@host, @port, dns_timeout, connect_timeout)
+        socket.read_timeout = read_timeout if read_timeout
+        socket.write_timeout = write_timeout if write_timeout
         socket.sync = false
 
         if tls
@@ -63,6 +58,7 @@ module HTTP
           socket << "Host: #{host}:#{port}\r\n"
 
           if @username
+            # Log.info { "Using proxy usename: #{@username}" }
             credentials = Base64.strict_encode("#{@username}:#{@password}")
             credentials = "#{credentials}\n".gsub(/\s/, "")
             socket << "Proxy-Authorization: Basic #{credentials}\r\n"
